@@ -31,7 +31,7 @@ bool newBlock = true;
 int xLength = 16;
 int yLength = 32;
 int myNumbers[16][32];
-int xBlock = xLength/2;
+int xBlock = xLength / 2;
 int yBlock = 0;
 int blockColor = 3;
 int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0)};
@@ -57,9 +57,14 @@ void setup() {
   pinMode(buttonRight, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(buttonRight), interruptRight, FALLING);
 
+
+  pinMode(buttonDown, INPUT_PULLUP);
+
+
+
   matrix.begin();
 
-  
+
 
 
 
@@ -139,7 +144,14 @@ void loop() {
 
   panelPrintSpielfeld();
 
+
+int stateButtonDown = digitalRead (buttonDown);
+  if (stateButtonDown == 0){
+    delay(25);
+  }
+  else{
   delay(200);
+  }
 }
 
 
@@ -151,7 +163,7 @@ void loop() {
 void newblock() {//Einen Neuen Block setzen
 
   yBlock = 0;
-  xBlock = xLength/2;
+  xBlock = xLength / 2;
   newBlock = true;
   blockColor = random(6);  // Eine Random Zahl zwischen 2-7
   checkLine();
@@ -214,13 +226,13 @@ void checkLine() {
       //Remove Line
       Serial.println("Clear Line");
 
-      for (byte k = j; k >0; k = k - 1) {
+      for (byte k = j; k > 0; k = k - 1) {
 
-       for (byte i = 0; i < xLength; i = i + 1) {
-        myNumbers[i][k] = myNumbers[i][k-1];
-       }
-       
-       
+        for (byte i = 0; i < xLength; i = i + 1) {
+          myNumbers[i][k] = myNumbers[i][k - 1];
+        }
+
+
 
 
       }
@@ -234,7 +246,6 @@ void checkLine() {
 
 
 }
-
 
 
 void interruptLeft() {
