@@ -407,28 +407,28 @@ void checkMoveBlock() {
   //überprüfen ob der Block über den Rand bewegt wird
   while (moveBlock != 0) {
 
-  if(moveBlock < 0){
-    if (!chekNextBlockPosition(2)) {
-      moveBlock = 0;
+    if (moveBlock < 0) {
+      if (!chekNextBlockPosition(2)) {
+        moveBlock = 0;
 
-    }else{
+      } else {
 
-      xBlock--;
-      moveBlock++;
+        xBlock--;
+        moveBlock++;
+      }
+
+    } else if (moveBlock > 0) {
+
+      if (!chekNextBlockPosition(1)) {
+        moveBlock = 0;
+      } else {
+
+        xBlock++;
+        moveBlock--;
+      }
     }
 
-  }else if (moveBlock > 0){
 
-    if (!chekNextBlockPosition(1)) {
-      moveBlock = 0;
-    }else {
-
-      xBlock++;
-      moveBlock--;
-    }
-  }
-
-   
   }
 
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
@@ -477,20 +477,56 @@ void checkMoveBlock() {
 
       for (byte j = 0; j < 4; j = j + 1) {
 
-        if (block1[blockOrientation][i][j] == 1) {
-          myNumbers[i + xBlock][j + yBlock] = block1[blockOrientation][i][j];
+
+
+
+        switch (blockColor ) {
+          case 0:
+            if (block1[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block1[blockOrientation][i][j];
+            }
+            break;
+          case 1:
+            if (block2[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block2[blockOrientation][i][j];
+            }
+            break;
+          case 2:
+            if (block3[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block3[blockOrientation][i][j];
+            }
+            break;
+          case 3:
+            if (block4[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block4[blockOrientation][i][j];
+            }
+            break;
+          case 4:
+            if (block5[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block5[blockOrientation][i][j];
+            }
+            break;
+          case 5:
+            if (block6[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block6[blockOrientation][i][j];
+            }
+            break;
+          case 6:
+            if (block7[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block7[blockOrientation][i][j];
+            }
+            break;
+          default:
+            if (block1[blockOrientation][i][j] == 1) {
+              myNumbers[i + xBlock][j + yBlock] = block1[blockOrientation][i][j];
+            }
+            break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
         }
       }
-
     }
-
-
-
-
   }
-
-
 }
+
 
 bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
   switch (dir) {
