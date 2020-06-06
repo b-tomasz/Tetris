@@ -7,9 +7,7 @@
 
 
 //Pins für die LED Matrix
-//#define CLK  8   // USE THIS ON ADAFRUIT METRO M0, etc.
 #define CLK A4 // USE THIS ON METRO M4 (not M0)
-//#define CLK 11 // USE THIS ON ARDUINO MEGA
 #define OE   9
 #define LAT 10
 #define A   A0
@@ -20,21 +18,30 @@
 
 #define buttonLeft 0
 #define buttonRight 1
-#define buttonTurn 12
-#define buttonDown 11
 #define led 8
+#define buttonDown 11
+#define buttonTurn 12
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false, 64);
 
 
 //Globale Variablen
-int myNumbers[10][15];
+
 bool newBlock = true;
-int xLength = 10;
-int yLength = 15;
-int xBlock = 5;
+int xLength = 16;
+int yLength = 32;
+int myNumbers[16][32];
+int xBlock = xLength/2;
 int yBlock = 0;
 int blockColor = 3;
+int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0)};
+int moveBlock = 0;
+
+
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 200;
+
+
 
 
 
@@ -43,8 +50,16 @@ void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   Serial.begin(9600);
 
+  pinMode(buttonLeft, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(buttonLeft), interruptLeft, FALLING);
+
+
+  pinMode(buttonRight, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(buttonRight), interruptRight, FALLING);
 
   matrix.begin();
+
+  
 
 
 
@@ -59,6 +74,21 @@ void loop() {
 
   */
 
+
+  if (moveBlock != 0) {
+    if (xBlock + moveBlock >= xLength) {
+      xBlock = xLength - 1;
+      moveBlock = 0;
+    } else if (xBlock + moveBlock < 0) {
+      xBlock = 0;
+      moveBlock = 0;
+    } else {
+      xBlock = xBlock + moveBlock;
+      moveBlock = 0;
+    }
+
+  }
+
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
   if (yBlock + 1 >= yLength || myNumbers[xBlock][yBlock + 1] > 1) {
     Serial.println("Fix Block");
@@ -71,7 +101,7 @@ void loop() {
 
         if (myNumbers[i][j] == 1) {
 
-          myNumbers[i][j] = blockColor;
+          myNumbers[i][j] = blockColor + 2;
 
 
         }
@@ -109,7 +139,7 @@ void loop() {
 
   panelPrintSpielfeld();
 
-  delay(1000);
+  delay(200);
 }
 
 
@@ -120,10 +150,12 @@ void loop() {
 
 void newblock() {//Einen Neuen Block setzen
 
-  blockColor++;
-
   yBlock = 0;
+  xBlock = xLength/2;
   newBlock = true;
+  blockColor = random(6);  // Eine Random Zahl zwischen 2-7
+  checkLine();
+
 }
 
 void serialPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeben
@@ -149,18 +181,78 @@ void panelPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeb
 
     for (byte j = 0; j < yLength; j = j + 1) {
 
-      if (myNumbers[i][j] >= 1) {
+      if (myNumbers[i][j] == 1) {
 
-          //matrix.drawPixel(i, j, matrix.Color333(7, 0, 0));
+        //matrix.drawPixel(i, j, matrix.Color333(7, 0, 0));
 
-matrix.fillRect(j*2, i*2, 2, 2, matrix.Color333(0, 7, 0));
+        matrix.fillRect(j * 2, i * 2, 2, 2, color[blockColor]);
 
-        }
-      
-      
+      } else if (myNumbers[i][j] > 1) {
+        matrix.fillRect(j * 2, i * 2, 2, 2, color[myNumbers[i][j] - 2]);
+      }
+
+
     }
 
   }
 
+}
+
+void checkLine() {
+
+  for (byte j = 0; j < yLength; j = j + 1) {
+    int fullLine = 0;
+
+    for (byte i = 0; i < xLength; i = i + 1) {
+      if (myNumbers[i][j] > 0) {
+        fullLine++;
+        Serial.println(fullLine);
+      }
+    }
+
+    if (fullLine >= xLength) {
+      //Remove Line
+      Serial.println("Clear Line");
+
+      for (byte k = j; k >0; k = k - 1) {
+
+       for (byte i = 0; i < xLength; i = i + 1) {
+        myNumbers[i][k] = myNumbers[i][k-1];
+       }
+       
+       
+
+
+      }
+
+
+
+
+    }
+
+  }
+
+
+}
+
+
+
+void interruptLeft() {
+  if (millis() - lastDebounceTime > debounceDelay) {
+
+    moveBlock++;
+
+    lastDebounceTime = millis();
+  }
+
+}
+
+void interruptRight() {
+  if (millis() - lastDebounceTime > debounceDelay) {
+
+    moveBlock--;
+
+    lastDebounceTime = millis();
+  }
 
 }
