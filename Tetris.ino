@@ -38,217 +38,6 @@ int blockColor = 3;
 int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
 int moveBlock = 0;
 
-
-
-int block1[4][4][4] = {
-  {
-    {0, 1, 0, 0},
-    {1, 1, 0, 0},
-    {1, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {0, 1, 1, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {0, 1, 0, 0},
-    {1, 1, 0, 0},
-    {1, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {0, 1, 1, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
-
-int block2[4][4][4] = {
-  {
-    {1, 0, 0, 0},
-    {1, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {0, 1, 1, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 0, 0, 0},
-    {1, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {0, 1, 1, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
-
-int block3[4][4][4] = {
-  {
-    {1, 0, 0, 0},
-    {1, 0, 0, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 1, 0},
-    {1, 0, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {0, 0, 1, 0},
-    {1, 1, 1, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
-
-int block4[4][4][4] = {
-  {
-    {0, 1, 0, 0},
-    {0, 1, 0, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 0, 0, 0},
-    {1, 1, 1, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {1, 0, 0, 0},
-    {1, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 1, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
-
-int block5[4][4][4] = {
-  {
-    {1, 1, 1, 0},
-    {0, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {0, 1, 0, 0},
-    {1, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {0, 1, 0, 0},
-    {1, 1, 1, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 0, 0, 0},
-    {1, 1, 0, 0},
-    {1, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
-
-int block6[4][4][4] = {
-  {
-    {1, 0, 0, 0},
-    {1, 0, 0, 0},
-    {1, 0, 0, 0},
-    {1, 0, 0, 0}
-  },
-  {
-    {1, 1, 1, 1},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 0, 0, 0},
-    {1, 0, 0, 0},
-    {1, 0, 0, 0},
-    {1, 0, 0, 0}
-  },
-  {
-    {1, 1, 1, 1},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
-
-int block7[4][4][4] = {
-  {
-    {1, 1, 0, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-  {
-    {1, 1, 0, 0},
-    {1, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-  },
-};
-
-
-
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 75;
 unsigned long debounceDelayTurn = 200;
@@ -322,7 +111,6 @@ void newblock() {//Einen Neuen Block setzen
   checkLine();
   blockOrientation = 0;
   blockOrientation = random(4);
-
 }
 
 void serialPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeben
@@ -358,11 +146,8 @@ void panelPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeb
       } else if (myNumbers[i][j] > 1) {
         matrix.fillRect(j * 2, i * 2, 2, 2, color[myNumbers[i][j] - 2]);
       }
-
     }
-
   }
-
 }
 
 void checkLine() {
@@ -433,11 +218,8 @@ void checkMoveBlock() {
         if (myNumbers[i][j] == 1) {
 
           myNumbers[i][j] = blockColor + 2;
-
-
         }
       }
-
     }
 
     newblock();
@@ -452,7 +234,6 @@ void checkMoveBlock() {
           myNumbers[i][j] = 0;
         }
       }
-
     }
 
     //Block um eine Position nach unten verschieben
@@ -466,50 +247,8 @@ void checkMoveBlock() {
 
       for (byte j = 0; j < 4; j = j + 1) {
 
-
-
-
-        switch (blockColor ) {
-          case 0:
-            if (block1[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block1[blockOrientation][i][j];
-            }
-            break;
-          case 1:
-            if (block2[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block2[blockOrientation][i][j];
-            }
-            break;
-          case 2:
-            if (block3[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block3[blockOrientation][i][j];
-            }
-            break;
-          case 3:
-            if (block4[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block4[blockOrientation][i][j];
-            }
-            break;
-          case 4:
-            if (block5[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block5[blockOrientation][i][j];
-            }
-            break;
-          case 5:
-            if (block6[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block6[blockOrientation][i][j];
-            }
-            break;
-          case 6:
-            if (block7[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block7[blockOrientation][i][j];
-            }
-            break;
-          default:
-            if (block1[blockOrientation][i][j] == 1) {
-              myNumbers[i + xBlock][j + yBlock] = block1[blockOrientation][i][j];
-            }
-            break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
+        if (getActiveBlock(blockOrientation, i, j) == 1) {
+          myNumbers[i + xBlock][j + yBlock] = getActiveBlock(blockOrientation, i, j);
         }
       }
     }
@@ -531,7 +270,6 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
             }
           }
         }
-
       }
 
 
@@ -549,7 +287,6 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
             }
           }
         }
-
       }
 
 
@@ -566,18 +303,14 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
             }
           }
         }
-
       }
-
-
+      
       break;
     default:
       return true;
       break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
   }
   return true;
-
-
 }
 
 void interruptLeft() {
@@ -587,7 +320,6 @@ void interruptLeft() {
 
     lastDebounceTime = millis();
   }
-
 }
 
 void interruptRight() {
@@ -597,7 +329,6 @@ void interruptRight() {
 
     lastDebounceTime = millis();
   }
-
 }
 
 void interruptRotate() {
@@ -611,7 +342,216 @@ void interruptRotate() {
   }
 
 }
+
 int getActiveBlock(int a, int b, int c) {
+  int block1[4][4][4] = {
+    {
+      {0, 1, 0, 0},
+      {1, 1, 0, 0},
+      {1, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {0, 1, 1, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {0, 1, 0, 0},
+      {1, 1, 0, 0},
+      {1, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {0, 1, 1, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
+
+
+  int block2[4][4][4] = {
+    {
+      {1, 0, 0, 0},
+      {1, 1, 0, 0},
+      {0, 1, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {0, 1, 1, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 0, 0, 0},
+      {1, 1, 0, 0},
+      {0, 1, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {0, 1, 1, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
+
+
+  int block3[4][4][4] = {
+    {
+      {1, 0, 0, 0},
+      {1, 0, 0, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 1, 0},
+      {1, 0, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {0, 1, 0, 0},
+      {0, 1, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {0, 0, 1, 0},
+      {1, 1, 1, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
+
+
+  int block4[4][4][4] = {
+    {
+      {0, 1, 0, 0},
+      {0, 1, 0, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 0, 0, 0},
+      {1, 1, 1, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {1, 0, 0, 0},
+      {1, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 1, 0},
+      {0, 0, 1, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
+
+
+  int block5[4][4][4] = {
+    {
+      {1, 1, 1, 0},
+      {0, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {0, 1, 0, 0},
+      {1, 1, 0, 0},
+      {0, 1, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {0, 1, 0, 0},
+      {1, 1, 1, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 0, 0, 0},
+      {1, 1, 0, 0},
+      {1, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
+
+
+  int block6[4][4][4] = {
+    {
+      {1, 0, 0, 0},
+      {1, 0, 0, 0},
+      {1, 0, 0, 0},
+      {1, 0, 0, 0}
+    },
+    {
+      {1, 1, 1, 1},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 0, 0, 0},
+      {1, 0, 0, 0},
+      {1, 0, 0, 0},
+      {1, 0, 0, 0}
+    },
+    {
+      {1, 1, 1, 1},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
+
+
+  int block7[4][4][4] = {
+    {
+      {1, 1, 0, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+    {
+      {1, 1, 0, 0},
+      {1, 1, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+    },
+  };
+
+
   switch (blockColor ) {
     case 0:
       return block1[a][b][c];
@@ -638,5 +578,4 @@ int getActiveBlock(int a, int b, int c) {
       return 0;
       break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
   }
-
 }
