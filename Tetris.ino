@@ -7,8 +7,8 @@
 
 
 //Pins für die LED Matrix
-#define CLK  8   // USE THIS ON ADAFRUIT METRO M0, etc.
-//#define CLK A4 // USE THIS ON METRO M4 (not M0)
+//#define CLK  8   // USE THIS ON ADAFRUIT METRO M0, etc.
+#define CLK A4 // USE THIS ON METRO M4 (not M0)
 //#define CLK 11 // USE THIS ON ARDUINO MEGA
 #define OE   9
 #define LAT 10
@@ -16,6 +16,13 @@
 #define B   A1
 #define C   A2
 #define D   A3
+
+
+#define buttonLeft 0
+#define buttonRight 1
+#define buttonTurn 12
+#define buttonDown 11
+#define led 8
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false, 64);
 
@@ -100,6 +107,8 @@ void loop() {
   //Spielfeld über die Serielle schnittstelle ausgeben
   serialPrintSpielfeld();
 
+  panelPrintSpielfeld();
+
   delay(1000);
 }
 
@@ -129,4 +138,29 @@ void serialPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausge
   }
 
   Serial.println("-----");
+}
+
+
+void panelPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeben
+
+  matrix.fillScreen(matrix.Color333(0, 0, 0));
+
+  for (byte i = 0; i < xLength; i = i + 1) {
+
+    for (byte j = 0; j < yLength; j = j + 1) {
+
+      if (myNumbers[i][j] >= 1) {
+
+          //matrix.drawPixel(i, j, matrix.Color333(7, 0, 0));
+
+matrix.fillRect(j*2, i*2, 2, 2, matrix.Color333(0, 7, 0));
+
+        }
+      
+      
+    }
+
+  }
+
+
 }
