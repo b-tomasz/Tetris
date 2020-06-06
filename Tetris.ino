@@ -156,7 +156,7 @@ void serialPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausge
   }
 
   Serial.println("-----");
-  Serial.println(blockOrientation);
+  Serial.println(moveBlock);
 }
 
 
@@ -225,20 +225,30 @@ void checkMoveBlock() {
 
 
   //überprüfen ob der Block über den Rand bewegt wird
-  if (moveBlock != 0) {
+  while (moveBlock != 0) {
 
+  if(moveBlock < 0){
+    if (!chekNextBlockPosition(2)) {
+      moveBlock = 0;
 
-    if (xBlock + moveBlock >= xLength) {
-      xBlock = xLength - 1;
-      moveBlock = 0;
-    } else if (xBlock + moveBlock < 0) {
-      xBlock = 0;
-      moveBlock = 0;
-    } else {
-      xBlock = xBlock + moveBlock;
-      moveBlock = 0;
+    }else{
+
+      xBlock--;
+      moveBlock++;
     }
 
+  }else if (moveBlock > 0){
+
+    if (!chekNextBlockPosition(1)) {
+      moveBlock = 0;
+    }else {
+
+      xBlock++;
+      moveBlock--;
+    }
+  }
+
+   
   }
 
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
@@ -299,6 +309,7 @@ void checkMoveBlock() {
 
   }
 
+
 }
 
 bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
@@ -310,9 +321,9 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
         for (byte j = 0; j < 4; j = j + 1) {
 
           if (block1[blockOrientation][i][j] == 1) {
-            if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || j+yBlock+1 >= yLength) {
+            if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || j + yBlock + 1 >= yLength) {
               return false;
-            } 
+            }
           }
         }
 
@@ -328,7 +339,7 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
         for (byte j = 0; j < 4; j = j + 1) {
 
           if (block1[blockOrientation][i][j] == 1) {
-            if (myNumbers[i + xBlock + 1][j + yBlock] > 1) {
+            if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || i + xBlock + 1 >= xLength) {
               return false;
             }
           }
@@ -345,9 +356,9 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
         for (byte j = 0; j < 4; j = j + 1) {
 
           if (block1[blockOrientation][i][j] == 1) {
-            if (myNumbers[i + xBlock - 1][j + yBlock] > 1) {
+            if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || i + xBlock - 1 < 0) {
               return false;
-            } 
+            }
           }
         }
 
