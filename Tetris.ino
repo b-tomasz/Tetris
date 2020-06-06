@@ -38,6 +38,8 @@ int blockColor = 3;
 int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
 int moveBlock = 0;
 
+
+
 int block1[4][4][4] = {
   {
     {0, 1, 0, 0},
@@ -64,6 +66,10 @@ int block1[4][4][4] = {
     {0, 0, 0, 0}
   },
 };
+
+
+
+
 int block2[4][4][4] = {
   {
     {1, 0, 0, 0},
@@ -90,6 +96,10 @@ int block2[4][4][4] = {
     {0, 0, 0, 0}
   },
 };
+
+
+
+
 int block3[4][4][4] = {
   {
     {1, 0, 0, 0},
@@ -116,6 +126,10 @@ int block3[4][4][4] = {
     {0, 0, 0, 0}
   },
 };
+
+
+
+
 int block4[4][4][4] = {
   {
     {0, 1, 0, 0},
@@ -142,6 +156,10 @@ int block4[4][4][4] = {
     {0, 0, 0, 0}
   },
 };
+
+
+
+
 int block5[4][4][4] = {
   {
     {1, 1, 1, 0},
@@ -168,6 +186,10 @@ int block5[4][4][4] = {
     {0, 0, 0, 0}
   },
 };
+
+
+
+
 int block6[4][4][4] = {
   {
     {1, 0, 0, 0},
@@ -194,6 +216,10 @@ int block6[4][4][4] = {
     {0, 0, 0, 0}
   },
 };
+
+
+
+
 int block7[4][4][4] = {
   {
     {1, 1, 0, 0},
@@ -221,10 +247,10 @@ int block7[4][4][4] = {
   },
 };
 
+
+
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 200;
-
-
 
 
 
@@ -332,7 +358,6 @@ void panelPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeb
       } else if (myNumbers[i][j] > 1) {
         matrix.fillRect(j * 2, i * 2, 2, 2, color[myNumbers[i][j] - 2]);
       }
-
 
     }
 
