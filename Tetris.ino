@@ -33,9 +33,37 @@ int yLength = 32;
 int myNumbers[16][32];
 int xBlock = xLength / 2;
 int yBlock = 0;
+int blockOrientation = 0;
 int blockColor = 3;
-int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0)};
+int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
 int moveBlock = 0;
+
+int block1[4][4][4] = {
+  {
+    {0, 1, 0, 0},
+    {1, 1, 0, 0},
+    {1, 0, 0, 0},
+    {0, 0, 0, 0}
+  },
+  {
+    {1, 1, 0, 0},
+    {0, 1, 1, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0}
+  },
+  {
+    {0, 1, 0, 0},
+    {1, 1, 0, 0},
+    {1, 0, 0, 0},
+    {0, 0, 0, 0}
+  },
+  {
+    {1, 1, 0, 0},
+    {0, 1, 1, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0}
+  },
+};
 
 
 unsigned long lastDebounceTime = 0;
@@ -73,70 +101,8 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-  /* if (newBlock == true) {
-     myNumbers[xBlock][yBlock] = 1;
-    }
 
-  */
-
-
-  if (moveBlock != 0) {
-    if (xBlock + moveBlock >= xLength) {
-      xBlock = xLength - 1;
-      moveBlock = 0;
-    } else if (xBlock + moveBlock < 0) {
-      xBlock = 0;
-      moveBlock = 0;
-    } else {
-      xBlock = xBlock + moveBlock;
-      moveBlock = 0;
-    }
-
-  }
-
-  //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
-  if (yBlock + 1 >= yLength || myNumbers[xBlock][yBlock + 1] > 1) {
-    Serial.println("Fix Block");
-
-
-    //Aktuellen Block fix setzen
-    for (byte i = 0; i < xLength; i = i + 1) {
-
-      for (byte j = 0; j < yLength; j = j + 1) {
-
-        if (myNumbers[i][j] == 1) {
-
-          myNumbers[i][j] = blockColor + 2;
-
-
-        }
-      }
-
-    }
-
-    newblock();
-  } else {
-
-    //Aktuellen Block Löschen
-    for (byte i = 0; i < xLength; i = i + 1) {
-
-      for (byte j = 0; j < yLength; j = j + 1) {
-        if (myNumbers[i][j] == 1) {
-
-          myNumbers[i][j] = 0;
-        }
-      }
-
-    }
-
-    //Block um eine Position nach unten verschieben
-    yBlock++;
-
-    //Aktuellen Block an neuer Position setzen
-    myNumbers[xBlock][yBlock] = 1;
-  }
-
-
+  checkMoveBlock();
 
 
   //Spielfeld über die Serielle schnittstelle ausgeben
@@ -145,12 +111,12 @@ void loop() {
   panelPrintSpielfeld();
 
 
-int stateButtonDown = digitalRead (buttonDown);
-  if (stateButtonDown == 0){
+  int stateButtonDown = digitalRead (buttonDown);
+  if (stateButtonDown == 0) {
     delay(25);
   }
-  else{
-  delay(200);
+  else {
+    delay(200);
   }
 }
 
@@ -165,7 +131,7 @@ void newblock() {//Einen Neuen Block setzen
   yBlock = 0;
   xBlock = xLength / 2;
   newBlock = true;
-  blockColor = random(6);  // Eine Random Zahl zwischen 2-7
+  blockColor = random(7);  // Eine Random Zahl zwischen 0-6
   checkLine();
 
 }
@@ -246,7 +212,69 @@ void checkLine() {
 
 
 }
+void checkMoveBlock() {
 
+
+//überprüfen ob der Block über den Rand bewegt wird
+  if (moveBlock != 0) {
+
+
+    if (xBlock + moveBlock >= xLength) {
+      xBlock = xLength - 1;
+      moveBlock = 0;
+    } else if (xBlock + moveBlock < 0) {
+      xBlock = 0;
+      moveBlock = 0;
+    } else {
+      xBlock = xBlock + moveBlock;
+      moveBlock = 0;
+    }
+
+  }
+
+  //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
+  if (yBlock + 1 >= yLength || myNumbers[xBlock][yBlock + 1] > 1) {
+    Serial.println("Fix Block");
+
+
+    //Aktuellen Block fix setzen
+    for (byte i = 0; i < xLength; i = i + 1) {
+
+      for (byte j = 0; j < yLength; j = j + 1) {
+
+        if (myNumbers[i][j] == 1) {
+
+          myNumbers[i][j] = blockColor + 2;
+
+
+        }
+      }
+
+    }
+
+    newblock();
+  } else {
+
+    //Aktuellen Block Löschen
+    for (byte i = 0; i < xLength; i = i + 1) {
+
+      for (byte j = 0; j < yLength; j = j + 1) {
+        if (myNumbers[i][j] == 1) {
+
+          myNumbers[i][j] = 0;
+        }
+      }
+
+    }
+
+    //Block um eine Position nach unten verschieben
+    yBlock++;
+
+    //Aktuellen Block an neuer Position setzen
+    myNumbers[xBlock][yBlock] = 1;
+  }
+
+}
 
 void interruptLeft() {
   if (millis() - lastDebounceTime > debounceDelay) {
