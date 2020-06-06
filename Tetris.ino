@@ -85,8 +85,15 @@ void setup() {
   pinMode(buttonRight, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(buttonRight), interruptRight, FALLING);
 
+  pinMode(buttonTurn, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(buttonTurn), interruptRotate, FALLING);
+
 
   pinMode(buttonDown, INPUT_PULLUP);
+
+
+  pinMode(led, OUTPUT);
+  digitalWrite(led, HIGH);
 
 
 
@@ -133,6 +140,7 @@ void newblock() {//Einen Neuen Block setzen
   newBlock = true;
   blockColor = random(7);  // Eine Random Zahl zwischen 0-6
   checkLine();
+  blockOrientation = 0;
 
 }
 
@@ -148,6 +156,7 @@ void serialPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausge
   }
 
   Serial.println("-----");
+  Serial.println(blockOrientation);
 }
 
 
@@ -215,7 +224,7 @@ void checkLine() {
 void checkMoveBlock() {
 
 
-//überprüfen ob der Block über den Rand bewegt wird
+  //überprüfen ob der Block über den Rand bewegt wird
   if (moveBlock != 0) {
 
 
@@ -233,7 +242,7 @@ void checkMoveBlock() {
   }
 
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
-  if (yBlock + 1 >= yLength || myNumbers[xBlock][yBlock + 1] > 1) {
+  if (yBlock + 1 >= yLength || myNumbers[xBlock][yBlock + 1] > 1 || !chekNextBlockPosition(0)) {
     Serial.println("Fix Block");
 
 
@@ -271,8 +280,87 @@ void checkMoveBlock() {
     yBlock++;
 
     //Aktuellen Block an neuer Position setzen
-    myNumbers[xBlock][yBlock] = 1;
+    //myNumbers[xBlock][yBlock] = 1;
+
+
+    for (byte i = 0; i < 4; i = i + 1) {
+
+      for (byte j = 0; j < 4; j = j + 1) {
+
+        if (block1[blockOrientation][i][j] == 1) {
+          myNumbers[i + xBlock][j + yBlock] = block1[blockOrientation][i][j];
+        }
+      }
+
+    }
+
+
+
+
   }
+
+}
+
+bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
+  switch (dir) {
+    case 0:   //down
+
+      for (byte i = 0; i < 4; i = i + 1) {
+
+        for (byte j = 0; j < 4; j = j + 1) {
+
+          if (block1[blockOrientation][i][j] == 1) {
+            if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || j+yBlock+1 >= yLength) {
+              return false;
+            } 
+          }
+        }
+
+      }
+
+
+
+      break;
+    case 1:   //left
+
+      for (byte i = 0; i < 4; i = i + 1) {
+
+        for (byte j = 0; j < 4; j = j + 1) {
+
+          if (block1[blockOrientation][i][j] == 1) {
+            if (myNumbers[i + xBlock + 1][j + yBlock] > 1) {
+              return false;
+            }
+          }
+        }
+
+      }
+
+
+      break;
+    case 2:   //right
+
+      for (byte i = 0; i < 4; i = i + 1) {
+
+        for (byte j = 0; j < 4; j = j + 1) {
+
+          if (block1[blockOrientation][i][j] == 1) {
+            if (myNumbers[i + xBlock - 1][j + yBlock] > 1) {
+              return false;
+            } 
+          }
+        }
+
+      }
+
+
+      break;
+    default:
+      return true;
+      break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
+  }
+  return true;
+
 
 }
 
@@ -290,6 +378,18 @@ void interruptRight() {
   if (millis() - lastDebounceTime > debounceDelay) {
 
     moveBlock--;
+
+    lastDebounceTime = millis();
+  }
+
+}
+
+void interruptRotate() {
+  if (millis() - lastDebounceTime > debounceDelay) {
+
+    blockOrientation++;
+
+    blockOrientation = blockOrientation % 4;
 
     lastDebounceTime = millis();
   }
