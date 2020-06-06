@@ -250,7 +250,8 @@ int block7[4][4][4] = {
 
 
 unsigned long lastDebounceTime = 0;
-unsigned long debounceDelay = 200;
+unsigned long debounceDelay = 75;
+unsigned long debounceDelayTurn = 200;
 
 
 
@@ -280,10 +281,8 @@ void setup() {
 
   matrix.begin();
 
-
-
-
-
+  blockColor = random(7);
+  blockOrientation = random(4);
 }
 
 // the loop function runs over and over again forever
@@ -322,6 +321,7 @@ void newblock() {//Einen Neuen Block setzen
   blockColor = random(7);  // Eine Random Zahl zwischen 0-6
   checkLine();
   blockOrientation = 0;
+  blockOrientation = random(4);
 
 }
 
@@ -386,21 +386,12 @@ void checkLine() {
         for (byte i = 0; i < xLength; i = i + 1) {
           myNumbers[i][k] = myNumbers[i][k - 1];
         }
-
-
-
-
       }
-
-
-
-
     }
-
   }
-
-
 }
+
+
 void checkMoveBlock() {
 
 
@@ -427,12 +418,10 @@ void checkMoveBlock() {
         moveBlock--;
       }
     }
-
-
   }
 
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
-  if (yBlock + 1 >= yLength || myNumbers[xBlock][yBlock + 1] > 1 || !chekNextBlockPosition(0)) {
+  if (!chekNextBlockPosition(0)) {
     Serial.println("Fix Block");
 
 
@@ -536,7 +525,7 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
 
         for (byte j = 0; j < 4; j = j + 1) {
 
-          if (block1[blockOrientation][i][j] == 1) {
+          if (getActiveBlock(blockOrientation, i, j) == 1) {
             if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || j + yBlock + 1 >= yLength) {
               return false;
             }
@@ -554,7 +543,7 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
 
         for (byte j = 0; j < 4; j = j + 1) {
 
-          if (block1[blockOrientation][i][j] == 1) {
+          if (getActiveBlock(blockOrientation, i, j) == 1) {
             if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || i + xBlock + 1 >= xLength) {
               return false;
             }
@@ -571,7 +560,7 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
 
         for (byte j = 0; j < 4; j = j + 1) {
 
-          if (block1[blockOrientation][i][j] == 1) {
+          if (getActiveBlock(blockOrientation, i, j) == 1) {
             if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || i + xBlock - 1 < 0) {
               return false;
             }
@@ -612,13 +601,42 @@ void interruptRight() {
 }
 
 void interruptRotate() {
-  if (millis() - lastDebounceTime > debounceDelay) {
+  if (millis() - lastDebounceTime > debounceDelayTurn) {
 
     blockOrientation++;
 
     blockOrientation = blockOrientation % 4;
 
     lastDebounceTime = millis();
+  }
+
+}
+int getActiveBlock(int a, int b, int c) {
+  switch (blockColor ) {
+    case 0:
+      return block1[a][b][c];
+      break;
+    case 1:
+      return block2[a][b][c];
+      break;
+    case 2:
+      return block3[a][b][c];
+      break;
+    case 3:
+      return block4[a][b][c];
+      break;
+    case 4:
+      return block5[a][b][c];
+      break;
+    case 5:
+      return block6[a][b][c];
+      break;
+    case 6:
+      return block7[a][b][c];
+      break;
+    default:
+      return 0;
+      break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
   }
 
 }
