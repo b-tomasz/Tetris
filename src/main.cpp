@@ -20,6 +20,7 @@
 #define led 8
 #define buttonDown 11
 #define buttonTurn 12
+#define analogRandomSeed A5
 
 
 //grösse Spielfeld
@@ -66,14 +67,15 @@ int getActiveBlock(int a, int b, int c);
 
 
 
-// the setup function runs once when you press reset or power the board
-void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
+
+void setup() { // the setup function runs once when you press reset or power the board
+
   Serial.begin(9600);
 
+
+  //Interrupt für alle Buttons initialisieren.
   pinMode(buttonLeft, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(buttonLeft), interruptLeft, FALLING);
-
 
   pinMode(buttonRight, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(buttonRight), interruptRight, FALLING);
@@ -88,6 +90,10 @@ void setup() {
   pinMode(led, OUTPUT);
   digitalWrite(led, HIGH);
 
+  //Freien analogen Pin lesen, für einen besseren Zufall
+  pinMode(analogRandomSeed, INPUT);
+  randomSeed(analogRead(analogRandomSeed));
+
 
 
   matrix.begin();
@@ -96,8 +102,8 @@ void setup() {
   blockOrientation = random(4);
 }
 
-// the loop function runs over and over again forever
-void loop() {
+
+void loop() { // the loop function runs over and over again forever
 
 
   checkMoveBlock();
@@ -150,7 +156,6 @@ void serialPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausge
   Serial.println(moveBlock);
 }
 
-
 void panelPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeben
 
   matrix.fillScreen(matrix.Color333(0, 0, 0));
@@ -172,7 +177,7 @@ void panelPrintSpielfeld() { //Spielfeld über die Serielle schnittstelle ausgeb
   }
 }
 
-void checkLine() {
+void checkLine() { // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen entfernen.
 
   for (byte j = 0; j < yLength; j = j + 1) {
     int fullLine = 0;
@@ -198,9 +203,7 @@ void checkLine() {
   }
 }
 
-
-void checkMoveBlock() {
-
+void checkMoveBlock() { //überprüfen, ob der Block nach links oder rechts beget werden soll, und ob dies möglich ist.
 
   //überprüfen ob der Block über den Rand bewegt wird
   while (moveBlock != 0) {
@@ -277,7 +280,6 @@ void checkMoveBlock() {
   }
 }
 
-
 bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
   switch (dir) {
     case 0:   //down
@@ -335,7 +337,7 @@ bool chekNextBlockPosition(int dir) { //int dir  0= down 1= left 2= right
   return true;
 }
 
-void interruptLeft() {
+void interruptLeft() { // Interrupt methode für button left
   if (millis() - lastDebounceTime > debounceDelay) {
 
     moveBlock++;
@@ -344,7 +346,7 @@ void interruptLeft() {
   }
 }
 
-void interruptRight() {
+void interruptRight() { // Interrupt methode für button right
   if (millis() - lastDebounceTime > debounceDelay) {
 
     moveBlock--;
@@ -353,7 +355,7 @@ void interruptRight() {
   }
 }
 
-void interruptRotate() {
+void interruptRotate() { // Interrupt methode für button rotate
   if (millis() - lastDebounceTime > debounceDelayTurn) {
 
     blockOrientation++;
@@ -365,7 +367,7 @@ void interruptRotate() {
 
 }
 
-int getActiveBlock(int a, int b, int c) {
+int getActiveBlock(int a, int b, int c) { // Giebt vom aktuellen Block die aktuelle Position zurück
   int block1[4][4][4] = {
     {
       {0, 1, 0, 0},
