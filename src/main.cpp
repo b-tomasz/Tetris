@@ -22,9 +22,13 @@
 #define buttonTurn 12
 
 
-//Test
+//grösse Spielfeld
 #define spielfeldX 16
 #define spielfeldY 32
+
+//geschwindigkeit
+#define speed 200
+#define speedFast 25
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false, 64);
 
@@ -107,10 +111,10 @@ void loop() {
 
   int stateButtonDown = digitalRead (buttonDown);
   if (stateButtonDown == 0) {
-    delay(25);
+    delay(speedFast);
   }
   else {
-    delay(200);
+    delay(speed);
   }
 }
 
