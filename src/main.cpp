@@ -49,6 +49,7 @@ unsigned long debounceDelayTurn = 200;
 
 //Methoden deklarieren
 void newblock();
+void gameOver();
 void serialPrintSpielfeld();
 void panelPrintSpielfeld();
 void checkLine();
@@ -112,8 +113,8 @@ void loop()
 
 //------------------------  Methoden   ---------------------
 
-void newblock()
-{ //Einen Neuen Block setzen
+void newblock() //Einen Neuen Block setzen
+{
 
   yBlock = 0;
   xBlock = (xLength / 2) - 1;
@@ -121,10 +122,37 @@ void newblock()
   blockColor = random(7); // Eine Random Zahl zwischen 0-6
   checkLine();
   blockOrientation = random(4);
+
+  if (!chekNextBlockPosition(0))
+  {
+    gameOver();
+  }
 }
 
-void serialPrintSpielfeld()
-{ //Spielfeld über die Serielle schnittstelle ausgeben
+void gameOver() //Das Spielfeld zurücksetzen und neu starten
+{
+  for (byte i = 0; i < 5; i++)
+  {
+    matrix.fillScreen(matrix.Color333(1, 1, 1));
+    delay(50);
+    matrix.fillScreen(matrix.Color333(0, 0, 0));
+    delay(50);
+  }
+
+  for (byte i = 0; i < xLength; i = i + 1)
+  {
+    for (byte j = 0; j < yLength; j = j + 1)
+    {
+
+      myNumbers[i][j] = 0;
+    }
+  }
+
+
+}
+
+void serialPrintSpielfeld() //Spielfeld über die Serielle schnittstelle ausgeben
+{
 
   for (byte i = 0; i < xLength; i = i + 1)
   {
@@ -141,8 +169,8 @@ void serialPrintSpielfeld()
   Serial.println(moveBlock);
 }
 
-void panelPrintSpielfeld()
-{ //Spielfeld über die Serielle schnittstelle ausgeben
+void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
+{
 
   matrix.fillScreen(matrix.Color333(0, 0, 0));
 
@@ -167,8 +195,8 @@ void panelPrintSpielfeld()
   }
 }
 
-void checkLine()
-{ // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen entfernen.
+void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen entfernen.
+{
 
   for (byte j = 0; j < yLength; j = j + 1)
   {
@@ -200,8 +228,8 @@ void checkLine()
   }
 }
 
-void checkMoveBlock()
-{ //überprüfen, ob der Block nach links oder rechts beget werden soll, und ob dies möglich ist.
+void checkMoveBlock() //überprüfen, ob der Block nach links oder rechts beget werden soll, und ob dies möglich ist.
+{
 
   //überprüfen ob der Block über den Rand bewegt wird
   while (moveBlock != 0)
@@ -270,8 +298,8 @@ void checkMoveBlock()
   }
 }
 
-void aktualisiereBlock()
-{ // Block auf die aktuelle Position setzen
+void aktualisiereBlock() // Block auf die aktuelle Position setzen
+{
   //Aktuellen Block Löschen
   for (byte i = 0; i < xLength; i = i + 1)
   {
@@ -303,8 +331,8 @@ void aktualisiereBlock()
   }
 }
 
-bool chekNextBlockPosition(int dir)
-{ //int dir  0= down 1= left 2= right
+bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right -> false = block an nächster position
+{
   switch (dir)
   {
   case 0: //down
@@ -371,8 +399,8 @@ bool chekNextBlockPosition(int dir)
   return true;
 }
 
-void interruptLeft()
-{ // Interrupt methode für button left
+void interruptLeft() // Interrupt methode für button left
+{
   if (millis() - lastDebounceTime > debounceDelay)
   {
 
@@ -382,8 +410,8 @@ void interruptLeft()
   }
 }
 
-void interruptRight()
-{ // Interrupt methode für button right
+void interruptRight() // Interrupt methode für button right
+{
   if (millis() - lastDebounceTime > debounceDelay)
   {
 
@@ -393,8 +421,8 @@ void interruptRight()
   }
 }
 
-void interruptRotate()
-{ // Interrupt methode für button rotate
+void interruptRotate() // Interrupt methode für button rotate
+{
   if (millis() - lastDebounceTime > debounceDelayTurn)
   {
 
@@ -406,8 +434,8 @@ void interruptRotate()
   }
 }
 
-int getActiveBlock(int a, int b, int c)
-{ // Giebt vom aktuellen Block die aktuelle Position zurück
+int getActiveBlock(int a, int b, int c) // Gibt vom aktuellen Block die aktuelle Position zurück
+{
   int block1[4][4][4] = {
       {{0, 1, 0, 0},
        {1, 1, 0, 0},
