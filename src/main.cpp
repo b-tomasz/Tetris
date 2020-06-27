@@ -40,7 +40,8 @@ int xBlock;
 int yBlock;
 int blockOrientation;
 int blockColor;
-int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
+//int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
+int color[] = {matrix.Color333(0, 2, 0), matrix.Color333(0, 0, 2), matrix.Color333(2, 0, 0), matrix.Color333(2, 0, 2), matrix.Color333(0, 2, 2), matrix.Color333(2, 1, 0), matrix.Color333(2, 2, 2)};
 int moveBlock = 0;
 
 unsigned long lastDebounceTime = 0;
@@ -86,6 +87,7 @@ void setup()
   randomSeed(analogRead(analogRandomSeed));
 
   matrix.begin();
+  matrix.setRotation(3);
 
   newblock();
 }
@@ -96,7 +98,9 @@ void loop()
   checkMoveBlock();
 
   //Spielfeld über die Serielle schnittstelle ausgeben
-  serialPrintSpielfeld();
+  //serialPrintSpielfeld();
+
+  Serial.println(xBlock);
 
   panelPrintSpielfeld();
 
@@ -148,6 +152,8 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
     }
   }
 
+  panelPrintSpielfeld();
+
 
 }
 
@@ -185,11 +191,11 @@ void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
 
         //matrix.drawPixel(i, j, matrix.Color333(7, 0, 0));
 
-        matrix.fillRect(j * 2, i * 2, 2, 2, color[blockColor]);
+        matrix.fillRect(i * 2, j * 2, 2, 2, color[blockColor]);
       }
       else if (myNumbers[i][j] > 1)
       {
-        matrix.fillRect(j * 2, i * 2, 2, 2, color[myNumbers[i][j] - 2]);
+        matrix.fillRect(i * 2, j * 2, 2, 2, color[myNumbers[i][j] - 2]);
       }
     }
   }
@@ -532,20 +538,20 @@ int getActiveBlock(int a, int b, int c) // Gibt vom aktuellen Block die aktuelle
   };
 
   int block6[4][4][4] = {
-      {{1, 0, 0, 0},
-       {1, 0, 0, 0},
-       {1, 0, 0, 0},
-       {1, 0, 0, 0}},
-      {{1, 1, 1, 1},
-       {0, 0, 0, 0},
+      {{0, 1, 0, 0},
+       {0, 1, 0, 0},
+       {0, 1, 0, 0},
+       {0, 1, 0, 0}},
+      {{0, 0, 0, 0},
+       {1, 1, 1, 1},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
-      {{1, 0, 0, 0},
-       {1, 0, 0, 0},
-       {1, 0, 0, 0},
-       {1, 0, 0, 0}},
-      {{1, 1, 1, 1},
-       {0, 0, 0, 0},
+      {{0, 1, 0, 0},
+       {0, 1, 0, 0},
+       {0, 1, 0, 0},
+       {0, 1, 0, 0}},
+      {{0, 0, 0, 0},
+       {1, 1, 1, 1},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
   };
