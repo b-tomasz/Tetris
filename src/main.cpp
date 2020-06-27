@@ -135,6 +135,45 @@ void newblock() //Einen Neuen Block setzen
 
 void gameOver() //Das Spielfeld zurücksetzen und neu starten
 {
+
+  for (byte i = 0; i < 46; i++)
+  {
+    matrix.fillScreen(matrix.Color333(0, 0, 0));
+    matrix.setTextColor(matrix.Color333(3, 0, 0));
+   
+
+    matrix.setCursor(4, i);
+    matrix.println("GAME");
+
+    matrix.setCursor(4, i + 10);
+    matrix.println("OVER");
+    delay(2);
+
+    matrix.setTextColor(matrix.Color333(7, 0, 0));
+   
+
+    matrix.setCursor(4, i);
+    matrix.println("GAME");
+
+    matrix.setCursor(4, i + 10);
+    matrix.println("OVER");
+
+    delay(40);
+
+    matrix.setTextColor(matrix.Color333(3, 0, 0));
+   
+
+    matrix.setCursor(4, i);
+    matrix.println("GAME");
+
+    matrix.setCursor(4, i + 10);
+    matrix.println("OVER");
+
+    delay(2);
+  }
+
+  delay(5000);
+
   for (byte i = 0; i < 5; i++)
   {
     matrix.fillScreen(matrix.Color333(1, 1, 1));
@@ -153,8 +192,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   }
 
   panelPrintSpielfeld();
-
-
 }
 
 void serialPrintSpielfeld() //Spielfeld über die Serielle schnittstelle ausgeben
