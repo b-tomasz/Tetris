@@ -20,13 +20,13 @@
 #define buttonTurn 12
 #define analogRandomSeed A5
 
-//grösse Spielfeld
-#define spielfeldX 16
-#define spielfeldY 32
+//grösse Spielfeld 1 = 2 Pixel
+#define spielfeldX 10
+#define spielfeldY 22
 
-//Rand Spielfeld
-#define randLinks 0
-#define randRechts 0
+//Rand Spielfeld 1 = 1 Pixel
+#define randLinks 6
+#define randOben 20
 
 //geschwindigkeit
 #define speed 200
@@ -48,6 +48,7 @@ int blockColor;
 int color[] = {matrix.Color333(0, 2, 0), matrix.Color333(0, 0, 2), matrix.Color333(2, 0, 0), matrix.Color333(2, 0, 2), matrix.Color333(0, 2, 2), matrix.Color333(2, 1, 0), matrix.Color333(2, 2, 2)};
 int moveBlock = 0;
 int rotateBlock = 0;
+int score = 0;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 75;
@@ -175,6 +176,7 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   }
 
   delay(5000);
+  score = 0;
 
   for (byte i = 0; i < 5; i++)
   {
@@ -230,14 +232,26 @@ void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
 
         //matrix.drawPixel(i, j, matrix.Color333(7, 0, 0));
 
-        matrix.fillRect(i * 2, j * 2, 2, 2, color[blockColor]);
+        matrix.fillRect((i * 2) + randLinks, (j * 2) + randOben, 2, 2, color[blockColor]);
       }
       else if (myNumbers[i][j] > 1)
       {
-        matrix.fillRect(i * 2, j * 2, 2, 2, color[myNumbers[i][j] - 2]);
+        matrix.fillRect((i * 2) + randLinks, (j * 2) + randOben, 2, 2, color[myNumbers[i][j] - 2]);
       }
     }
   }
+
+  //Print Score
+  matrix.setTextColor(matrix.Color333(3, 0, 0));
+
+  matrix.setCursor(2, 1);
+  matrix.println(String(score));
+
+  //Print Lines
+
+  matrix.drawLine(randLinks-1, randOben-1, randLinks-1, randOben-1+(yLength*2), matrix.Color333(1, 1, 1));
+  matrix.drawLine(randLinks+(xLength*2), randOben-1, randLinks+(xLength*2), randOben-1+(yLength*2), matrix.Color333(1, 1, 1));
+
 }
 
 void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen entfernen.
@@ -260,6 +274,7 @@ void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen e
     {
       //Remove Line
       Serial.println("Clear Line");
+      score++;
 
       for (byte k = j; k > 0; k = k - 1)
       {
@@ -314,15 +329,14 @@ void checkMoveBlock() //überprüfen, ob der Block nach links oder rechts beget 
     if (!chekNextBlockPosition(3))
     {
       rotateBlock = 0;
-    }else
+    }
+    else
     {
       blockOrientation++;
-      blockOrientation = blockOrientation %4;
+      blockOrientation = blockOrientation % 4;
       rotateBlock--;
     }
   }
-  
-  
 
   aktualisiereBlock();
 
@@ -463,7 +477,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
 
         if (getActiveBlock(blockOrientation + 1, i, j) == 1)
         {
-          if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0|| j + yBlock >= yLength)
+          if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0 || j + yBlock >= yLength)
           {
             return false;
           }
@@ -472,8 +486,6 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
     }
 
     break;
-
-  
 
     break;
   default:
