@@ -29,7 +29,7 @@
 #define randOben 20
 
 //geschwindigkeit
-#define speed 200
+#define speed 300
 #define speedFast 25
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false, 64);
@@ -52,6 +52,7 @@ int moveBlock = 0;
 int rotateBlock = 0;
 int score = 0;
 int highScore = 0;
+int actualSpeed = speed;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 75;
@@ -120,7 +121,7 @@ void loop()
   }
   else
   {
-    delay(speed);
+    delay(actualSpeed);
   }
 }
 
@@ -151,6 +152,8 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   {
     highScore = score;
   }
+
+  actualSpeed = speed;
 
   for (byte i = 0; i < 46; i++)
   {
@@ -321,6 +324,7 @@ void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen e
       //Remove Line
       Serial.println("Clear Line");
       score++;
+      actualSpeed-=5;
 
       for (byte k = j; k > 0; k = k - 1)
       {
@@ -619,18 +623,18 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
        {1, 0, 0, 0},
        {1, 1, 0, 0},
        {0, 0, 0, 0}},
-      {{1, 1, 1, 0},
-       {1, 0, 0, 0},
+       {{0, 0, 1, 0},
+       {1, 1, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
       {{1, 1, 0, 0},
        {0, 1, 0, 0},
        {0, 1, 0, 0},
        {0, 0, 0, 0}},
-      {{0, 0, 1, 0},
-       {1, 1, 1, 0},
+       {{1, 1, 1, 0},
+       {1, 0, 0, 0},
        {0, 0, 0, 0},
-       {0, 0, 0, 0}},
+       {0, 0, 0, 0}},      
   };
 
   int block4[4][4][4] = {
@@ -638,16 +642,16 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
        {0, 1, 0, 0},
        {1, 1, 0, 0},
        {0, 0, 0, 0}},
-      {{1, 0, 0, 0},
-       {1, 1, 1, 0},
+      {{1, 1, 1, 0},
+       {0, 0, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
       {{1, 1, 0, 0},
        {1, 0, 0, 0},
        {1, 0, 0, 0},
-       {0, 0, 0, 0}},
-      {{1, 1, 1, 0},
-       {0, 0, 1, 0},
+       {0, 0, 0, 0}},      
+       {{1, 0, 0, 0},
+       {1, 1, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
   };
@@ -657,18 +661,18 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
        {0, 1, 0, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
-      {{0, 1, 0, 0},
+      {{1, 0, 0, 0},
        {1, 1, 0, 0},
-       {0, 1, 0, 0},
+       {1, 0, 0, 0},
        {0, 0, 0, 0}},
       {{0, 1, 0, 0},
        {1, 1, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
-      {{1, 0, 0, 0},
+       {{0, 1, 0, 0},
        {1, 1, 0, 0},
-       {1, 0, 0, 0},
-       {0, 0, 0, 0}},
+       {0, 1, 0, 0},
+       {0, 0, 0, 0}},      
   };
 
   int block6[4][4][4] = {
