@@ -251,6 +251,7 @@ void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
 
   matrix.drawLine(randLinks-1, randOben-1, randLinks-1, randOben-1+(yLength*2), matrix.Color333(1, 1, 1));
   matrix.drawLine(randLinks+(xLength*2), randOben-1, randLinks+(xLength*2), randOben-1+(yLength*2), matrix.Color333(1, 1, 1));
+  matrix.drawRect(0,0,32,9) matrix.Color333(1, 1, 1));
 
 }
 
