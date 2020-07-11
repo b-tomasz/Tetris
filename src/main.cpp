@@ -44,6 +44,8 @@ int xBlock;
 int yBlock;
 int blockOrientation;
 int blockColor;
+int nextBlockOrientation;
+int nextBlockColor;
 //int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
 int color[] = {matrix.Color333(0, 2, 0), matrix.Color333(0, 0, 2), matrix.Color333(2, 0, 0), matrix.Color333(2, 0, 2), matrix.Color333(0, 2, 2), matrix.Color333(2, 1, 0), matrix.Color333(2, 2, 2)};
 int moveBlock = 0;
@@ -67,7 +69,7 @@ bool chekNextBlockPosition(int dir);
 void interruptLeft();
 void interruptRight();
 void interruptRotate();
-int getActiveBlock(int a, int b, int c);
+int getActiveBlock(int a, int b, int c, int color);
 
 void setup()
 { // the setup function runs once when you press reset or power the board
@@ -130,9 +132,11 @@ void newblock() //Einen Neuen Block setzen
   yBlock = 0;
   xBlock = (xLength / 2) - 1;
   newBlock = true;
-  blockColor = random(7); // Eine Random Zahl zwischen 0-6
+  blockColor = nextBlockColor;
+  nextBlockColor = random(7); // Eine Random Zahl zwischen 0-6
   checkLine();
-  blockOrientation = random(4);
+  blockOrientation = nextBlockOrientation;
+  nextBlockOrientation = random(4);
 
   if (!chekNextBlockPosition(0))
   {
@@ -268,6 +272,20 @@ void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
       }
     }
   }
+  // Print next Block
+
+  for (byte i = 0; i < 4; i = i + 1)
+    {
+
+      for (byte j = 0; j < 4; j = j + 1)
+      {
+
+        if (getActiveBlock(nextBlockOrientation, i, j, nextBlockColor) == 1)
+        {
+          matrix.fillRect((i * 2) + 14, (j * 2) + 11, 2, 2, color[nextBlockColor]);
+        }
+      }
+    }
 
   //Print Score
   matrix.setTextColor(matrix.Color333(3, 0, 0));
@@ -425,9 +443,9 @@ void aktualisiereBlock() // Block auf die aktuelle Position setzen
     for (byte j = 0; j < 4; j = j + 1)
     {
 
-      if (getActiveBlock(blockOrientation, i, j) == 1)
+      if (getActiveBlock(blockOrientation, i, j, blockColor) == 1)
       {
-        myNumbers[i + xBlock][j + yBlock] = getActiveBlock(blockOrientation, i, j);
+        myNumbers[i + xBlock][j + yBlock] = getActiveBlock(blockOrientation, i, j, blockColor);
       }
     }
   }
@@ -445,7 +463,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
       for (byte j = 0; j < 4; j = j + 1)
       {
 
-        if (getActiveBlock(blockOrientation, i, j) == 1)
+        if (getActiveBlock(blockOrientation, i, j, blockColor) == 1)
         {
           if (myNumbers[i + xBlock][j + yBlock + 1] > 1 || j + yBlock + 1 >= yLength)
           {
@@ -464,7 +482,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
       for (byte j = 0; j < 4; j = j + 1)
       {
 
-        if (getActiveBlock(blockOrientation, i, j) == 1)
+        if (getActiveBlock(blockOrientation, i, j, blockColor) == 1)
         {
           if (myNumbers[i + xBlock + 1][j + yBlock] > 1 || i + xBlock + 1 >= xLength)
           {
@@ -483,7 +501,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
       for (byte j = 0; j < 4; j = j + 1)
       {
 
-        if (getActiveBlock(blockOrientation, i, j) == 1)
+        if (getActiveBlock(blockOrientation, i, j, blockColor) == 1)
         {
           if (myNumbers[i + xBlock - 1][j + yBlock] > 1 || i + xBlock - 1 < 0)
           {
@@ -503,7 +521,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
       for (byte j = 0; j < 4; j = j + 1)
       {
 
-        if (getActiveBlock(blockOrientation + 1, i, j) == 1)
+        if (getActiveBlock(blockOrientation + 1, i, j, blockColor) == 1)
         {
           if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0 || j + yBlock >= yLength)
           {
@@ -556,7 +574,7 @@ void interruptRotate() // Interrupt methode für button rotate
   }
 }
 
-int getActiveBlock(int a, int b, int c) // Gibt vom aktuellen Block die aktuelle Position zurück
+int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block die aktuelle Position zurück
 {
   int block1[4][4][4] = {
       {{0, 1, 0, 0},
@@ -691,7 +709,7 @@ int getActiveBlock(int a, int b, int c) // Gibt vom aktuellen Block die aktuelle
        {0, 0, 0, 0}},
   };
 
-  switch (blockColor)
+  switch (color)
   {
   case 0:
     return block1[a][b][c];
