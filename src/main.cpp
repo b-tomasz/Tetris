@@ -43,6 +43,7 @@ int blockColor;
 //int color[] = {matrix.Color333(0, 7, 0), matrix.Color333(0, 0, 7), matrix.Color333(7, 0, 0), matrix.Color333(7, 0, 7), matrix.Color333(0, 7, 7), matrix.Color333(7, 5, 0), matrix.Color333(7, 7, 7)};
 int color[] = {matrix.Color333(0, 2, 0), matrix.Color333(0, 0, 2), matrix.Color333(2, 0, 0), matrix.Color333(2, 0, 2), matrix.Color333(0, 2, 2), matrix.Color333(2, 1, 0), matrix.Color333(2, 2, 2)};
 int moveBlock = 0;
+int rotateBlock = 0;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 75;
@@ -123,7 +124,8 @@ void newblock() //Einen Neuen Block setzen
   yBlock = 0;
   xBlock = (xLength / 2) - 1;
   newBlock = true;
-  blockColor = random(7); // Eine Random Zahl zwischen 0-6
+  //blockColor = random(7); // Eine Random Zahl zwischen 0-6
+  blockColor = 5;
   checkLine();
   blockOrientation = random(4);
 
@@ -140,7 +142,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   {
     matrix.fillScreen(matrix.Color333(0, 0, 0));
     matrix.setTextColor(matrix.Color333(3, 0, 0));
-   
 
     matrix.setCursor(4, i);
     matrix.println("GAME");
@@ -150,7 +151,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
     delay(2);
 
     matrix.setTextColor(matrix.Color333(7, 0, 0));
-   
 
     matrix.setCursor(4, i);
     matrix.println("GAME");
@@ -161,7 +161,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
     delay(40);
 
     matrix.setTextColor(matrix.Color333(3, 0, 0));
-   
 
     matrix.setCursor(4, i);
     matrix.println("GAME");
@@ -307,6 +306,21 @@ void checkMoveBlock() //überprüfen, ob der Block nach links oder rechts beget 
     }
   }
 
+  while (rotateBlock > 0)
+  {
+    if (!chekNextBlockPosition(3))
+    {
+      rotateBlock = 0;
+    }else
+    {
+      blockOrientation++;
+      blockOrientation = blockOrientation %4;
+      rotateBlock--;
+    }
+  }
+  
+  
+
   aktualisiereBlock();
 
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
@@ -374,7 +388,7 @@ void aktualisiereBlock() // Block auf die aktuelle Position setzen
   }
 }
 
-bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right -> false = block an nächster position
+bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotate -> false = block an nächster position
 {
   switch (dir)
   {
@@ -435,6 +449,30 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right -> false
     }
 
     break;
+
+  case 3: //rotate
+
+    for (byte i = 0; i < 4; i = i + 1)
+    {
+
+      for (byte j = 0; j < 4; j = j + 1)
+      {
+
+        if (getActiveBlock(blockOrientation + 1, i, j) == 1)
+        {
+          if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0)
+          {
+            return false;
+          }
+        }
+      }
+    }
+
+    break;
+
+  
+
+    break;
   default:
     return true;
     break; // Wird nicht benötigt, wenn Statement(s) vorhanden sind
@@ -469,9 +507,7 @@ void interruptRotate() // Interrupt methode für button rotate
   if (millis() - lastDebounceTime > debounceDelayTurn)
   {
 
-    blockOrientation++;
-
-    blockOrientation = blockOrientation % 4;
+    rotateBlock++;
 
     lastDebounceTime = millis();
   }
