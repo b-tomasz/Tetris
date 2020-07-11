@@ -24,6 +24,10 @@
 #define spielfeldX 16
 #define spielfeldY 32
 
+//Rand Spielfeld
+#define randLinks 0
+#define randRechts 0
+
 //geschwindigkeit
 #define speed 200
 #define speedFast 25
@@ -459,7 +463,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
 
         if (getActiveBlock(blockOrientation + 1, i, j) == 1)
         {
-          if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0)
+          if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0|| j + yBlock >= yLength)
           {
             return false;
           }
