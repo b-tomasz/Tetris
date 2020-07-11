@@ -49,6 +49,7 @@ int color[] = {matrix.Color333(0, 2, 0), matrix.Color333(0, 0, 2), matrix.Color3
 int moveBlock = 0;
 int rotateBlock = 0;
 int score = 0;
+int highScore = 0;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 75;
@@ -142,6 +143,11 @@ void newblock() //Einen Neuen Block setzen
 void gameOver() //Das Spielfeld zurücksetzen und neu starten
 {
 
+  if (score > highScore)
+  {
+    highScore = score;
+  }
+
   for (byte i = 0; i < 46; i++)
   {
     matrix.fillScreen(matrix.Color333(0, 0, 0));
@@ -175,7 +181,29 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
     delay(2);
   }
 
-  delay(5000);
+  //Print Score
+
+  matrix.setTextColor(matrix.Color333(0, 0, 3));
+
+  matrix.setCursor(2, 2);
+  matrix.println("Score");
+
+  matrix.setCursor(2, 11);
+  matrix.println(String(score));
+
+  //Print Highscore
+
+  matrix.setTextColor(matrix.Color333(0, 3, 0));
+
+  matrix.setCursor(2, 20);
+  matrix.println("Best");
+
+  matrix.setCursor(2, 29);
+  matrix.println(String(highScore));
+
+  delay(10000);
+  
+
   score = 0;
 
   for (byte i = 0; i < 5; i++)
@@ -249,10 +277,9 @@ void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
 
   //Print Lines
 
-  matrix.drawLine(randLinks-1, randOben-1, randLinks-1, randOben-1+(yLength*2), matrix.Color333(1, 1, 1));
-  matrix.drawLine(randLinks+(xLength*2), randOben-1, randLinks+(xLength*2), randOben-1+(yLength*2), matrix.Color333(1, 1, 1));
-  matrix.drawRect(0,0,32,9) matrix.Color333(1, 1, 1));
-
+  matrix.drawLine(randLinks - 1, randOben - 1, randLinks - 1, randOben - 1 + (yLength * 2), matrix.Color333(1, 1, 1));
+  matrix.drawLine(randLinks + (xLength * 2), randOben - 1, randLinks + (xLength * 2), randOben - 1 + (yLength * 2), matrix.Color333(1, 1, 1));
+  matrix.drawRect(0, 0, 32, 9, matrix.Color333(1, 1, 1));
 }
 
 void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen entfernen.
