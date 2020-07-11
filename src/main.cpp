@@ -124,8 +124,7 @@ void newblock() //Einen Neuen Block setzen
   yBlock = 0;
   xBlock = (xLength / 2) - 1;
   newBlock = true;
-  //blockColor = random(7); // Eine Random Zahl zwischen 0-6
-  blockColor = 5;
+  blockColor = random(7); // Eine Random Zahl zwischen 0-6
   checkLine();
   blockOrientation = random(4);
 
