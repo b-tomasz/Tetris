@@ -3,6 +3,11 @@
 //LED Matrix Libary einbinden
 #include <RGBmatrixPanel.h>
 
+//Libarys für Flash speicher
+#include <SPI.h>
+#include "SdFat.h"
+#include "Adafruit_SPIFlash.h"
+
 //Pins für die LED Matrix
 #define CLK A4 // USE THIS ON METRO M4 (not M0)
 #define OE 9
@@ -33,6 +38,24 @@
 #define speedFast 25
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false, 64);
+
+//Filesystem auf dem Falsh Speicher erstellen
+#if defined(EXTERNAL_FLASH_USE_QSPI)
+Adafruit_FlashTransport_QSPI flashTransport;
+
+#elif defined(EXTERNAL_FLASH_USE_SPI)
+Adafruit_FlashTransport_SPI flashTransport(EXTERNAL_FLASH_USE_CS, EXTERNAL_FLASH_USE_SPI);
+
+#else
+#error No QSPI/SPI flash are defined on your board variant.h !
+#endif
+
+Adafruit_SPIFlash flash(&flashTransport);
+
+// file system object from SdFat
+FatFileSystem fatfs;
+
+File myFile;
 
 //Globale Variablen
 
@@ -70,6 +93,8 @@ bool chekNextBlockPosition(int dir);
 void interruptLeft();
 void interruptRight();
 void interruptRotate();
+int readHighScore();
+void writeHighsSore(int highScore);
 int getActiveBlock(int a, int b, int c, int color);
 
 void setup()
@@ -96,10 +121,21 @@ void setup()
   pinMode(analogRandomSeed, INPUT);
   randomSeed(analogRead(analogRandomSeed));
 
+  // Init external flash
+  flash.begin();
+
+  // Init file system on the flash
+  fatfs.begin(&flash);
+
+  //Highscore reseten
+  //fatfs.remove("score.txt");
+
   matrix.begin();
   matrix.setRotation(3);
 
   newblock();
+
+  highScore = readHighScore();
 }
 
 void loop()
@@ -148,10 +184,14 @@ void newblock() //Einen Neuen Block setzen
 void gameOver() //Das Spielfeld zurücksetzen und neu starten
 {
 
+
   if (score > highScore)
   {
     highScore = score;
+    writeHighsSore(score);
   }
+  
+  
 
   actualSpeed = speed;
 
@@ -209,7 +249,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   matrix.println(String(highScore));
 
   delay(10000);
-  
 
   score = 0;
 
@@ -235,7 +274,7 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
 
 void serialPrintSpielfeld() //Spielfeld über die Serielle schnittstelle ausgeben
 {
-
+/*
   for (byte i = 0; i < xLength; i = i + 1)
   {
 
@@ -249,6 +288,8 @@ void serialPrintSpielfeld() //Spielfeld über die Serielle schnittstelle ausgebe
 
   Serial.println("-----");
   Serial.println(moveBlock);
+
+  */
 }
 
 void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
@@ -278,17 +319,17 @@ void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
   // Print next Block
 
   for (byte i = 0; i < 4; i = i + 1)
+  {
+
+    for (byte j = 0; j < 4; j = j + 1)
     {
 
-      for (byte j = 0; j < 4; j = j + 1)
+      if (getActiveBlock(nextBlockOrientation, i, j, nextBlockColor) == 1)
       {
-
-        if (getActiveBlock(nextBlockOrientation, i, j, nextBlockColor) == 1)
-        {
-          matrix.fillRect((i * 2) + 14, (j * 2) + 11, 2, 2, color[nextBlockColor]);
-        }
+        matrix.fillRect((i * 2) + 14, (j * 2) + 11, 2, 2, color[nextBlockColor]);
       }
     }
+  }
 
   //Print Score
   matrix.setTextColor(matrix.Color333(3, 0, 0));
@@ -324,7 +365,7 @@ void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen e
       //Remove Line
       Serial.println("Clear Line");
       score++;
-      actualSpeed-=5;
+      actualSpeed -= 5;
 
       for (byte k = j; k > 0; k = k - 1)
       {
@@ -578,6 +619,55 @@ void interruptRotate() // Interrupt methode für button rotate
   }
 }
 
+int readHighScore() //Higscore vom Flash auslesen
+{
+  myFile = fatfs.open("score.txt");
+  if (myFile)
+  {
+    String scoreRead;
+    // read from the file until there's nothing else in it:
+   /* while (myFile.available())
+    {
+
+      scoreRead += String(myFile.read());
+      Serial.println(String(scoreRead));
+    }*/
+    scoreRead=myFile.readStringUntil('\n');
+    // close the file:
+    myFile.close();
+    Serial.println(String(scoreRead));
+
+    return scoreRead.toInt();
+  }
+  else
+  {
+    // if the file didn't open, print an error:
+    Serial.println("error opening score.txt");
+    return 0;
+  }
+}
+
+void writeHighsSore(int highScore) //Highscore in den Flash schreiben
+{
+  fatfs.remove("score.txt");
+  myFile = fatfs.open("score.txt", FILE_WRITE);
+
+  // if the file opened okay, write to it:
+  if (myFile)
+  {
+    Serial.print("Writing to score.txt...");
+    myFile.println(String(highScore));
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  }
+  else
+  {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
+  }
+}
+
 int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block die aktuelle Position zurück
 {
   int block1[4][4][4] = {
@@ -623,7 +713,7 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
        {1, 0, 0, 0},
        {1, 1, 0, 0},
        {0, 0, 0, 0}},
-       {{0, 0, 1, 0},
+      {{0, 0, 1, 0},
        {1, 1, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
@@ -631,10 +721,10 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
        {0, 1, 0, 0},
        {0, 1, 0, 0},
        {0, 0, 0, 0}},
-       {{1, 1, 1, 0},
+      {{1, 1, 1, 0},
        {1, 0, 0, 0},
        {0, 0, 0, 0},
-       {0, 0, 0, 0}},      
+       {0, 0, 0, 0}},
   };
 
   int block4[4][4][4] = {
@@ -649,8 +739,8 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
       {{1, 1, 0, 0},
        {1, 0, 0, 0},
        {1, 0, 0, 0},
-       {0, 0, 0, 0}},      
-       {{1, 0, 0, 0},
+       {0, 0, 0, 0}},
+      {{1, 0, 0, 0},
        {1, 1, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
@@ -669,10 +759,10 @@ int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block d
        {1, 1, 1, 0},
        {0, 0, 0, 0},
        {0, 0, 0, 0}},
-       {{0, 1, 0, 0},
+      {{0, 1, 0, 0},
        {1, 1, 0, 0},
        {0, 1, 0, 0},
-       {0, 0, 0, 0}},      
+       {0, 0, 0, 0}},
   };
 
   int block6[4][4][4] = {
