@@ -84,7 +84,6 @@ unsigned long debounceDelayTurn = 200;
 //Methoden deklarieren
 void newblock();
 void gameOver();
-void serialPrintSpielfeld();
 void panelPrintSpielfeld();
 void checkLine();
 void checkMoveBlock();
@@ -100,7 +99,6 @@ int getActiveBlock(int a, int b, int c, int color);
 void setup()
 { // the setup function runs once when you press reset or power the board
 
-  Serial.begin(9600);
 
   //Interrupt für alle Buttons initialisieren.
   pinMode(buttonLeft, INPUT_PULLUP);
@@ -142,11 +140,6 @@ void loop()
 { // the loop function runs over and over again forever
 
   checkMoveBlock();
-
-  //Spielfeld über die Serielle schnittstelle ausgeben
-  //serialPrintSpielfeld();
-
-  Serial.println(xBlock);
 
   panelPrintSpielfeld();
 
@@ -272,25 +265,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   panelPrintSpielfeld();
 }
 
-void serialPrintSpielfeld() //Spielfeld über die Serielle schnittstelle ausgeben
-{
-/*
-  for (byte i = 0; i < xLength; i = i + 1)
-  {
-
-    for (byte j = 0; j < yLength; j = j + 1)
-    {
-      Serial.print(myNumbers[i][j]);
-      Serial.print(":");
-    }
-    Serial.println("");
-  }
-
-  Serial.println("-----");
-  Serial.println(moveBlock);
-
-  */
-}
 
 void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
 {
@@ -356,14 +330,12 @@ void checkLine() // überprüfen, ob eine Zeile Voll ist und die Vollen Zeilen e
       if (myNumbers[i][j] > 0)
       {
         fullLine++;
-        Serial.println(fullLine);
       }
     }
 
     if (fullLine >= xLength)
     {
       //Remove Line
-      Serial.println("Clear Line");
       score++;
       actualSpeed -= 5;
 
@@ -434,8 +406,6 @@ void checkMoveBlock() //überprüfen, ob der Block nach links oder rechts beget 
   //überprüfen, ob der Block in der nächsten Position an einem anderen ankommt, oder am Boden
   if (!chekNextBlockPosition(0))
   {
-    Serial.println("Fix Block");
-
     //Aktuellen Block fix setzen
     for (byte i = 0; i < xLength; i = i + 1)
     {
@@ -626,23 +596,16 @@ int readHighScore() //Higscore vom Flash auslesen
   {
     String scoreRead;
     // read from the file until there's nothing else in it:
-   /* while (myFile.available())
-    {
-
-      scoreRead += String(myFile.read());
-      Serial.println(String(scoreRead));
-    }*/
+   
     scoreRead=myFile.readStringUntil('\n');
     // close the file:
     myFile.close();
-    Serial.println(String(scoreRead));
 
     return scoreRead.toInt();
   }
   else
   {
-    // if the file didn't open, print an error:
-    Serial.println("error opening score.txt");
+    
     return 0;
   }
 }
@@ -655,17 +618,11 @@ void writeHighsSore(int highScore) //Highscore in den Flash schreiben
   // if the file opened okay, write to it:
   if (myFile)
   {
-    Serial.print("Writing to score.txt...");
     myFile.println(String(highScore));
     // close the file:
     myFile.close();
-    Serial.println("done.");
   }
-  else
-  {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
-  }
+ 
 }
 
 int getActiveBlock(int a, int b, int c, int color) // Gibt vom aktuellen Block die aktuelle Position zurück
