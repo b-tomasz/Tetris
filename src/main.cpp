@@ -265,7 +265,6 @@ void gameOver() //Das Spielfeld zurücksetzen und neu starten
   panelPrintSpielfeld();
 }
 
-
 void panelPrintSpielfeld() //Spielfeld auf das Panel übertragen
 {
 
