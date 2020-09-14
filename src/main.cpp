@@ -535,7 +535,7 @@ bool chekNextBlockPosition(int dir) //int dir  0= down 1= left 2= right 3= rotat
       for (byte j = 0; j < 4; j = j + 1)
       {
 
-        if (getActiveBlock(blockOrientation + 1, i, j, blockColor) == 1)
+        if (getActiveBlock((blockOrientation + 1) % 4, i, j, blockColor) == 1)
         {
           if (myNumbers[i + xBlock][j + yBlock] > 1 || i + xBlock >= xLength || i + xBlock < 0 || j + yBlock >= yLength)
           {
